@@ -1,0 +1,60 @@
+<md-dialog>
+    <md-whiteframe class="md-whiteframe-z1" layout="column" layout-padding ng-if="!isRegistering">
+        <div flex>
+            <md-button class="md-primary md-raised" style="margin-left: 0; width: 100%;" ng-click="google()">
+                Log in with Google
+            </md-button>
+        </div>
+        <div flex>
+            <md-button class="md-primary md-raised" style="margin-left: 0; width: 100%;" ng-click="facebook()">
+                Log in with Facebook
+            </md-button>
+        </div>
+        <div flex>
+            <form name="loginForm" novalidate>
+                <md-input-container>
+                    <label for="login-email">Email</label>
+                    <input id="login-email" type="email" ng-model="loginUser.email" required>
+                </md-input-container>
+                <md-input-container>
+                    <label for="login-password">Password</label>
+                    <input id="login-password" type="password" ng-model="loginUser.password" required>
+                </md-input-container>
+                <div>
+                    <md-button class="md-primary md-raised" ng-click="login(loginUser)" ng-disabled="loginForm.$invalid">
+                        Log in with Email
+                    </md-button>
+                    <md-button class="md-secondary md-raised" ng-click="toggleRegistration()">
+                        Register
+                    </md-button>
+                </div>
+            </form>
+        </div>
+    </md-whiteframe>
+    <md-whiteframe class="md-whiteframe-z1" layout="column" layout-padding ng-if="isRegistering">
+        <div flex>
+            <form name="registrationForm" novalidate>
+                <md-input-container>
+                    <label for="registration-email">Email</label>
+                    <input id="registration-email" type="email" ng-model="registrationUser.email" required>
+                </md-input-container>
+                <md-input-container>
+                    <label for="registration-email-confirmation">Email Confirmation</label>
+                    <input id="registration-email-confirmation" type="email" ng-model="registrationUser.emailConfirmation" required>
+                </md-input-container>
+                <md-input-container>
+                    <label for="registration-password">Password</label>
+                    <input id="registration-password" type="password" ng-model="registrationUser.password" required>
+                </md-input-container>
+                <div>
+                    <md-button class="md-primary md-raised" ng-click="register(registrationUser)" ng-disabled="registrationForm.$invalid || registrationUser.email !== registrationUser.emailConfirmation">
+                        Register
+                    </md-button>
+                    <md-button class="md-secondary md-raised" ng-click="toggleRegistration()">
+                        Log In
+                    </md-button>
+                </div>
+            </form>
+        </div>
+    </md-whiteframe>
+</md-dialog>

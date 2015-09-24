@@ -1,6 +1,32 @@
-<div class="md-toolbar-tools">
-    <md-button ng-click="toggleSidenav('left')" hide-gt-sm class="md-icon-button">
-        <md-icon aria-label="Menu" md-svg-icon="https://s3-us-west-2.amazonaws.com/s.cdpn.io/68133/menu.svg"></md-icon>
-    </md-button>
-    <h1>Hello World</h1>
+<div class="md-toolbar-tools" layout="row">
+    <!-- <div hide-gt-sm flex style="max-width: 4rem;">
+        <md-button ng-click="toggleSidenav('left')" hide-gt-sm class="md-icon-button">
+            <md-icon aria-label="Menu" md-svg-icon="https://s3-us-west-2.amazonaws.com/s.cdpn.io/68133/menu.svg"></md-icon>
+        </md-button>
+    </div> -->
+    <div flex>
+        <h1>Bike Builder</h1>
+    </div>
+    <div style="position: fixed; top: .25rem; right: .25rem;">
+        <md-fab-speed-dial ng-hide="demo.hidden" md-direction="left" class="md-fling" md-open="speedDial.isOpen" ng-mouseenter="speedDial.isOpen = true" ng-mouseleave="speedDial.isOpen = false">
+          <md-fab-trigger>
+            <md-button aria-label="menu" class="md-fab md-warn">
+              <md-tooltip md-direction="down">Menu</md-tooltip>
+              <md-icon aria-label="menu">menu</md-icon>
+            </md-button>
+          </md-fab-trigger>
+        
+          <md-fab-actions>
+            <div>
+              <md-button aria-label="person" class="md-fab md-hue-1 md-raised md-mini" ng-if="user" ui-sref="master.user">
+                <md-tooltip md-direction="down">Person</md-tooltip>
+                <md-icon aria-label="person">person</md-icon>
+              </md-button>
+              <md-button class="md-hue-1 md-raised" ng-if="!user" ng-click="showLoginDialog($event)">
+                  Log In
+              </md-button>
+            </div>
+          </md-fab-actions>
+        </md-fab-speed-dial>
+    </div>
 </div>
