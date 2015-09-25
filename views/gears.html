@@ -1,1 +1,89 @@
-gears.html
+<div layout="row">
+    <h3 class="md-headline" flex>Gear Visualizer</h3>
+    <div flex style="max-width: 20rem; text-align: right;">
+        <md-button class="md-primary md-raised" ng-click="toggleEdit()" aria-label="toggle edit">
+            <span ng-if="$storage.gearsViewState == 'editing'">View</span>
+            <span ng-if="$storage.gearsViewState == 'viewing'">Edit</span>
+        </md-button>
+    </div>
+</div>
+<md-whiteframe class="md-whiteframe-z1" layout="row" layout-padding layout-wrap ng-show="$storage.gearsViewState == 'editing'">
+    <md-list flex="100">
+        <md-item ng-repeat="gearing in gearings">
+            <md-item-content layout="column" layout-align="space-between center" layout-padding layout-wrap>
+                <div flex style="width: 100%;">
+                    <h4 class="md-title">Bike Details</h4>
+                    <md-input-container style="width: 100%;">
+                        <label for="gearing-{{ $index }}-name">Name</label>
+                        <input id="gearing-{{ $index }}-name" type="text" ng-model="gearing.name" ng-change="saveGearing(gearing)" ng-model-options="{debounce: {'default': 500}}">
+                    </md-input-container>
+                    <md-input-container>
+                        <label for="gearing-{{ $index }}-tire-circumference">Tire</label>
+                        <md-select id="gearing-{{ $index }}-tire-circumference" ng-model="gearing.tireCircumference" ng-change="saveGearing(gearing)">
+                            <md-option ng-repeat="tires in parameters.tires" ng-value="tire.circumference">{{ tire.name }}</md-option>
+                        </md-select>
+                    </md-input-container>
+                </div>
+                <div flex style="width: 100%;">
+                    <h4 class="md-title">Chainrings</h4>
+                    <div ng-repeat="chainring in gearing.chainrings" layout="row" layout-padding layout-sm="column">
+                        <div flex style="max-width: 4.5rem; padding-left: 0;">
+                            <md-button class="md-fab md-mini md-warn" ng-click="removeChainring(gearing, $index)" ng-if="$index" style="margin-left: 0;">
+                                <md-icon>clear</md-icon>
+                            </md-button>
+                        </div>
+                        <md-slider flex ng-model="chainring.teeth" md-discrete min="{{ parameters.chainring.min }}" max="{{ parameters.chainring.max }}" aria-label="chainring teeth" ng-change="saveChainring(gearing, $index, chainring.teeth)" ng-model-options="{debounce: {'default': 500}}"></md-slider>
+                        <md-input-container flex style="max-width: 5rem;">
+                            <label for="gearing-{{ $parent.$index }}-chainring-{{ $index }}-teeth">Teeth</label>
+                            <input id="gearing-{{ $parent.$index }}-chainring-{{ $index }}-teeth" flex type="number" ng-model="chainring.teeth" min="{{ parameters.chainring.min }}" max="{{ parameters.chainring.max }}" ng-change="saveChainring(gearing, $index, chainring.teeth)" ng-model-options="{debounce: {'default': 500}}">
+                        </md-input-container>
+                    </div>
+                    <div flex="100">
+                        <md-button class="md-fab md-mini md-primary md-raised" ng-click="addChainring(gearing)">
+                            <md-icon>add</md-icon>
+                        </md-button>
+                    </div>
+                </div>
+                <div flex style="width: 100%;">
+                    <h4 class="md-title">Cassette Cogs</h4>
+                    <div ng-repeat="cog in gearing.cogs" layout="row" layout-padding layout-sm="column">
+                        <div flex style="max-width: 4.5rem; padding-left: 0;">
+                            <md-button class="md-fab md-mini md-warn" ng-click="removeCog(gearing, $index)" ng-if="$index" style="margin-left: 0;">
+                                <md-icon>clear</md-icon>
+                            </md-button>
+                        </div>
+                        <md-slider flex ng-model="cog.teeth" md-discrete min="{{ parameters.cog.min }}" max="{{ parameters.cog.max }}" aria-label="cog teeth" ng-change="saveCog(gearing, $index, cog.teeth)" ng-model-options="{debounce: {'default': 500}}"></md-slider>
+                        <md-input-container flex style="max-width: 5rem;">
+                            <label for="gearing-{{ $parent.$index }}-cog-{{ $index }}-teeth">Teeth</label>
+                            <input id="gearing-{{ $parent.$index }}-cog-{{ $index }}-teeth" flex type="number" ng-model="cog.teeth" min="{{ parameters.cog.min }}" max="{{ parameters.cog.max }}" ng-change="saveCog(gearing, $index, cog.teeth)" ng-model-options="{debounce: {'default': 500}}">
+                        </md-input-container>
+                    </div>
+                    <div flex="100">
+                        <md-button class="md-fab md-mini md-primary md-raised" ng-click="addCog(gearing)">
+                            <md-icon>add</md-icon>
+                        </md-button>
+                    </div>
+                </div>
+                <div flex style="text-align: right; width: 100%;">
+                    <md-button class="md-fab md-mini md-warn md-raised" ng-click="removeGearing($event, gearing)">
+                        <md-tooltip>Remove Gearing</md-tooltip>
+                        <md-icon>clear</md-icon>
+                    </md-button>
+                </div>
+            </md-item-content>
+            <md-divider ng-if="!$last"></md-divider>
+        </md-item>
+    </md-list>
+    <div flex style="max-width: 5.5rem;">
+        <md-button class="md-fab md-primary md-raised" ng-click="addGearing()">
+            <md-tooltip>Add Gearing</md-tooltip>
+            <md-icon>add</md-icon>
+        </md-button>
+    </div>
+    <div flex>
+        <h3>Add Gearing</h3>
+    </div>
+</md-whiteframe>
+<md-whiteframe class="md-whiteframe-z1" layout="row" layout-padding layout-wrap ng-show="$storage.gearsViewState == 'viewing'">
+    <h3></h3>
+</md-whiteframe>

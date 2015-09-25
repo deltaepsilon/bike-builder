@@ -1,10 +1,28 @@
 (function() {
-    angular.module('BikeBuilderApp').controller('MasterCtrl', function($scope, $window, $mdSidenav, $mdToast, $mdDialog, $firebaseAuth, $firebaseArray, $firebaseObject, firebaseRoot) {
+    angular.module('BikeBuilderApp').controller('MasterCtrl', function($rootScope, $scope, $window, $mdSidenav, $mdToast, $mdDialog, $firebaseAuth, $firebaseArray, $firebaseObject, firebaseRoot) {
 
         var ref = new Firebase(firebaseRoot),
-            authObject = $firebaseAuth(ref);
+            authObject = $firebaseAuth(ref),
+            toDestroy = [];
 
         $scope.authObject = authObject;
+
+        $rootScope.registerAuthedObject = function (obj) {
+            toDestroy.push(obj);
+            return obj;
+        };
+
+        $scope.logOut = function() {
+            var i = toDestroy.length;
+
+            while (i--) {
+                if (typeof toDestroy[i].$destroy === 'function') {
+                    toDestroy[i].$destroy();    
+                }
+            }
+
+            authObject.$unauth();
+        };
 
         $scope.toggleSidenav = function(menuId) {
             $mdSidenav(menuId).toggle();
@@ -12,8 +30,9 @@
 
         $scope.setUser = function(user) {
             if (user) {
-                user.$bindTo($scope, 'user'); // Creates 3-way bind to from $scope.user to my-firebase.com/users/###userKey###
-                user.$loaded().then(function(user) { // Waits for user object to be loaded from Firebase socket
+                $rootScope.registerAuthedObject(user);
+                user.$bindTo($scope, 'user');
+                user.$loaded().then(function(user) {
                     console.info('user loaded!', user);
                 });
             } else {
@@ -35,17 +54,11 @@
             });
         };
 
-        
-
         authObject.$onAuth(function(authData) {
-            console.info('authData received', authData);
             if (!authData) {
-                // Sets user to falsy if no authData received, indicated that the user is logged out
                 $scope.setUser(false);
             } else {
-                // Creates a matching ACL entry for this successful login
-                var acl = $firebaseObject(new Firebase(firebaseRoot + 'acl/' + authData.uid));
-                acl.$loaded().then(function(acl) {
+                $rootScope.registerAuthedObject($firebaseObject(new Firebase(firebaseRoot + 'acl/' + authData.uid))).$loaded().then(function(acl) {
                     acl.lastLogin = (new Date()).toString();
                     acl.provider = authData.provider;
 
@@ -60,14 +73,12 @@
                     acl.$save();
                 });
 
-                // Will trigger if a userKey exists or once it has been created.
-                var userKey = $firebaseObject(new Firebase(firebaseRoot + 'acl/' + authData.uid + '/userKey'));
-                userKey.$watch(function() {
-                    if (userKey.$value) {
-                        var userRef = new Firebase(firebaseRoot + 'users/' + userKey.$value),
-                            user = $firebaseObject(userRef);
+                
+                var userKey = $rootScope.registerAuthedObject($firebaseObject(new Firebase(firebaseRoot + 'acl/' + authData.uid + '/userKey')));
 
-                        $scope.setUser(user);
+                userKey.$watch(function() { // Will trigger if a userKey exists or once it has been created.
+                    if (userKey.$value) {
+                        $scope.setUser($firebaseObject(new Firebase(firebaseRoot + 'users/' + userKey.$value)));
                     }
                 });
             }

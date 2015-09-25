@@ -1,10 +1,16 @@
 (function() {
-    angular.module('BikeBuilderApp').controller('LoginCtrl', function($scope, $firebaseAuth, $firebaseObject, firebaseRoot, $mdToast) {
+    angular.module('BikeBuilderApp').controller('LoginCtrl', function($scope, $firebaseAuth, $firebaseObject, firebaseRoot, $mdToast, $mdDialog) {
         var ref = new Firebase(firebaseRoot),
             authObject = $firebaseAuth(ref), 
             showAlert = function (message) {
                 $mdToast.show($mdToast.simple().content(message.toString()).position('false true true false').hideDelay(3000));
             };
+
+        authObject.$onAuth(function (authData) {
+            if (authData) {
+                $mdDialog.hide();    
+            }
+        });
 
         $scope.toggleRegistration = function () {
             $scope.isRegistering = !$scope.isRegistering;  

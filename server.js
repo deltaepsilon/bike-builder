@@ -16,7 +16,6 @@ ref.authWithCustomToken(firebaseSecret, function(error, authData) {
 
     var aclRef = ref.child('acl');
     aclRef.on('child_added', function(snap) {
-        console.log('child_added');
         var entry = snap.val(),
             entryKey = snap.key(),
             entryRef = snap.ref();
